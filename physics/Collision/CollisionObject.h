@@ -9,6 +9,12 @@ namespace physE {
         QVector3D Velocity;
         QVector3D Force;
         float Mass;
+        float I; //转动惯量
+
+        // Angular components
+        float orientation = 0; // radians
+        float angularVelocity = 0;
+        float torque = 0;
 
         Collider* Collider;
         Transform* Transform;

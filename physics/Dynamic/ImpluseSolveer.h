@@ -27,26 +27,24 @@ public:
 
             float aMass = aBody? aBody->Mass:0;
             float bMass = bBody? bBody->Mass:0;
+            float inv_massA = aMass? 1 / aMass:0;
+            float inv_massB = bMass? 1 / bMass:0;
 
             if (nSpd >= 0)
                 continue;
 
             float e = (aBody ? .8 : 1.0f)
                     * (bBody ? .8 : 1.0f);
-            float j = -(1.0f + e) * nSpd / (aMass + bMass);
+            float j = -(1.0f + e) * nSpd / (inv_massA + inv_massB);
 
             QVector3D impluse = j * collision.Points.Normal;
 
             if (aBody) {
-                //qDebug()<<1<<": "<<aVel;
-                aVel -= impluse * aMass;
-                //aBody->Velocity = aVel;
-                //qDebug()<<2<<": "<<aVel;
+                aVel -= impluse * inv_massA;
             }
 
             if (bBody) {
-                bVel += impluse * bMass;
-                //bBody->Velocity = bVel;
+                bVel += impluse * inv_massB;
             }
 
             // Friction
@@ -84,19 +82,21 @@ public:
 
             const float percent = 0.2; // usually 20% to 80%
             const float slop = 0.01; // usually 0.01 to 0.1
-            float inv_massA = aMass == 0? 0 : 1 / aMass;
-            float inv_massB = aMass == 0? 0 : 1 / bMass;
+
             QVector3D correction = std::max( collision.Points.Depth - slop, 0.0f ) / (inv_massA + inv_massB) * percent * collision.Points.Normal;
+            //qDebug()<<collision.Points.Depth<<", "<<collision.Points.Normal;
             if(aBody)
             {
                 aBody->Velocity = aVel - friction * aMass;
                 aBody->Transform->Position -= inv_massA * correction;
+                if(!bBody)aBody->Transform->Position -= inv_massA * correction;
             }
 
             if(bBody)
             {
                 bBody->Velocity = bVel + friction * bMass;
                 bBody->Transform->Position += inv_massB * correction;
+                if(!aBody)bBody->Transform->Position += inv_massB * correction;
             }
         }
     }

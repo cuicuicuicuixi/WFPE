@@ -48,17 +48,31 @@ namespace physE {
             vertex.push_back(QVector3D(-1, 1, 2));
             vertex.push_back(QVector3D( 1,-1, 2));
             vertex.push_back(QVector3D(-1,-1, 2));
+            std::vector<int> face{
+                0,1,2,
+                1,2,3,
+                4,5,6,
+                5,6,7,
+                0,1,5,
+                0,4,5,
+                2,3,7,
+                2,6,7,
+                0,2,6,
+                0,6,4,
+                1,3,7,
+                1,5,7
+            };
             impl::HullCollider * hull = new impl::HullCollider();
-            hull->setVetices(vertex);
+            hull->setData(vertex, face);
             srand((unsigned)time(NULL));
-            for(int i = 0; i < 2; i++)
+            for(int i = 0; i < 10; i++)
             {
                 double x = rand()%10-5;
                 double y = rand()%10-5;
-                double z = rand()%10-5;
+                double z = 0;//rand()%10-5;
                 double vx = rand()%4-2;
                 double vy = rand()%4-2;
-                double vz = rand()%4-2;
+                double vz = 0;//rand()%4-2;
                 Object *HullObj1 = new Object(i,QVector3D(x,y,z), QVector3D(vx,vy,vz), hull, true);
                 AddObject(HullObj1);
             }
@@ -82,17 +96,10 @@ namespace physE {
                     obj->Force += obj->Mass * m_gravity; // apply a force
 
                     obj->Velocity += obj->Force / obj->Mass * sub_dt;
-                    //obj->Position += obj->Velocity * sub_dt;
 
-                    //qDebug()<<obj->Velocity;
+                    obj->angularVelocity += obj->torque * (1.0f / obj->I) * sub_dt;
+
                     obj->Transform->Position += obj->Velocity * sub_dt;
-
-                    // constraint
-//                    if(obj->Transform->Position.y() <= -49.5)
-//                    {
-//                        obj->Transform->Position.setY(-49.5);
-//                        //obj->Transform->Position.setY(-49.5);
-//                    }
 
                     obj->Force = QVector3D(0, 0, 0); // reset net force at the end
                 }
@@ -110,6 +117,7 @@ namespace physE {
             {
                 obj->Draw(glFunc, shaderProgram);
             }
+            planeobject->Draw(glFunc, shaderProgram);
             shaderProgram->release();
         }
 
