@@ -9,6 +9,8 @@ namespace physE {
         Object* ObjB;
         CollisionPoints Points;
 
+        Collision(){}
+
         Collision(Object* _ObjA, Object* _ObjB, CollisionPoints _Points): ObjA(_ObjA), ObjB(_ObjB), Points(_Points)
         {
 

@@ -308,16 +308,16 @@ namespace impl {
                 std::vector<QVector4D> newNormals = std::get<0>(newNormalsFaces);
                 size_t newMinFace = std::get<1>(newNormalsFaces);
 
-                float newMinDistance = FLT_MAX;
+                float oldMinDistance = FLT_MAX;
 
                 for (size_t i = 0; i < normals.size(); i++) {
-                    if (normals[i].w() < newMinDistance) {
-                        newMinDistance = normals[i].w();
+                    if (normals[i].w() < oldMinDistance) {
+                        oldMinDistance = normals[i].w();
                         minFace = i;
                     }
                 }
 
-                if (newNormals[newMinFace].w() < newMinDistance) {
+                if (newNormals[newMinFace].w() < oldMinDistance) {
                     minFace = newMinFace + normals.size();
                 }
 
@@ -332,10 +332,17 @@ namespace impl {
 
         CollisionPoints points;
 
+        //find contact point
+        qDebug()<<"#########################";
+        qDebug()<<minNormal;
+        qDebug()<<normals[minFace];
+        qDebug()<<minDistance;
+        qDebug()<<faces[minFace]<<","<<faces[minFace + 1]<<","<<faces[minFace + 2];
+        qDebug()<<polytope[faces[minFace]]<<","<<polytope[faces[minFace + 1]]<<","<<polytope[faces[minFace + 2]];
+
         points.Normal = minNormal;
         points.Depth = minDistance + 0.001f;
         points.HasCollision = true;
-        //qDebug()<<points.Depth;
 
         return points;
     }

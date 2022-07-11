@@ -10,10 +10,12 @@ namespace physE
         QVector3D B; // Furthest point of B into A
         QVector3D Normal; // B – A normalized
         float Depth;    // Length of B – A
+
+        QVector3D ContactPoint;
         bool HasCollision;
 
         CollisionPoints()
-            : A(), B(), Normal(), Depth()
+            : A(), B(), Normal(), Depth(), ContactPoint()
         {}
 
         CollisionPoints(QVector3D a, QVector3D b, QVector3D normal, float distance, bool hasCollision)

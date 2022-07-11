@@ -41,6 +41,15 @@ namespace physE {
         QMatrix3x3 Rotation;
     };
 
+    struct VerNorm
+    {
+        QVector3D Vertex;
+        QVector3D Norm = QVector3D();
+
+        VerNorm(){}
+        VerNorm(QVector3D ver) : Vertex(ver) {};
+    };
+
 
     struct Collider {
         const ColliderType Type;

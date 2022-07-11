@@ -13,8 +13,8 @@ namespace physE {
 
         // Angular components
         float orientation = 0; // radians
-        float angularVelocity = 0;
-        float torque = 0;
+        QVector3D angularVelocity = QVector3D();
+        QVector3D torque = QVector3D();
 
         Collider* Collider;
         Transform* Transform;

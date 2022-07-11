@@ -55,10 +55,6 @@ struct Simplex;
             Collider* colliderA, Transform* transformA,
             Collider* colliderB, Transform* transformB,
             QVector3D direction);
-//    {
-//        return colliderA->FindFurthestPoint(transformA, direction)
-//                - colliderB->FindFurthestPoint(transformB, -direction);
-//    }
 
     bool NextSimplex(Simplex &vertices, QVector3D &direction);
 
@@ -72,47 +68,10 @@ struct Simplex;
     std::pair<bool, Simplex> GJK(
             Collider* colliderA, Transform* transformA,
             Collider* colliderB, Transform* transformB);
-//    {
-//        QVector3D support = Support(
-//                    colliderA, transformA,
-//                    colliderB, transformB, QVector3D(1,0,0));
-
-//        Simplex vertices;
-//        vertices.push_front(support);
-
-//        QVector3D direction = -support;
-
-//        size_t iterations = 0;
-//        while(iterations++ < 32u)
-//        {
-//            support = Support(
-//                colliderA, transformA,
-//                colliderB, transformB, direction);
-
-//            // 下一个 support points 是否 “穿过” 原点
-//            if (QVector3D::dotProduct(support, direction) <= 0) {
-//                break;
-//            }
-
-//            vertices.push_front(support);
-
-
-//            if (NextSimplex(vertices, direction)) {
-//                return std::make_pair(true, vertices);
-//            }
-
-//        }
-
-//        return {false, vertices};
-//    }
-
 
     bool SameDirection(
             const QVector3D& direction,
             const QVector3D& ao);
-//    {
-//        return QVector3D::dotProduct(direction, ao) > 0;
-//    }
 
 
 

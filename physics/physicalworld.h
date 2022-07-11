@@ -13,6 +13,7 @@
 #include "algo/kdtree.h"
 #include "algo/kdtree.cpp"
 
+
 namespace physE {
 
     class physicalworld
@@ -40,14 +41,14 @@ namespace physE {
         void init()
         {
             std::vector<QVector3D> vertex;
-            vertex.push_back(QVector3D( 1, 1, 0));
-            vertex.push_back(QVector3D(-1, 1, 0));
-            vertex.push_back(QVector3D( 1,-1, 0));
-            vertex.push_back(QVector3D(-1,-1, 0));
-            vertex.push_back(QVector3D( 1, 1, 2));
-            vertex.push_back(QVector3D(-1, 1, 2));
-            vertex.push_back(QVector3D( 1,-1, 2));
-            vertex.push_back(QVector3D(-1,-1, 2));
+            vertex.push_back(QVector3D( 1, 1, -1));
+            vertex.push_back(QVector3D(-1, 1, -1));
+            vertex.push_back(QVector3D( 1,-1, -1));
+            vertex.push_back(QVector3D(-2,-1, -1));
+            vertex.push_back(QVector3D( 1, 1, 1));
+            vertex.push_back(QVector3D(-1, 1, 1));
+            vertex.push_back(QVector3D( 1,-1, 1));
+            vertex.push_back(QVector3D(-1,-1, 1));
             std::vector<int> face{
                 0,1,2,
                 1,2,3,
@@ -64,18 +65,22 @@ namespace physE {
             };
             impl::HullCollider * hull = new impl::HullCollider();
             hull->setData(vertex, face);
-            srand((unsigned)time(NULL));
-            for(int i = 0; i < 10; i++)
-            {
-                double x = rand()%10-5;
-                double y = rand()%10-5;
-                double z = 0;//rand()%10-5;
-                double vx = rand()%4-2;
-                double vy = rand()%4-2;
-                double vz = 0;//rand()%4-2;
-                Object *HullObj1 = new Object(i,QVector3D(x,y,z), QVector3D(vx,vy,vz), hull, true);
-                AddObject(HullObj1);
-            }
+//            srand((unsigned)time(NULL));
+//            for(int i = 0; i < 5; i++)
+//            {
+//                double x = rand()%10-5;
+//                double y = rand()%10-5;
+//                double z = 0;//rand()%10-5;
+//                double vx = rand()%4-2;
+//                double vy = rand()%4-2;
+//                double vz = 0;//rand()%4-2;
+//                Object *HullObj1 = new Object(i,QVector3D(x,y,z), QVector3D(vx,vy,vz), hull, true);
+//                AddObject(HullObj1);
+//            }
+            Object *HullObj1 = new Object(1,QVector3D(-10,0,10), QVector3D(10,0,0), hull, true);
+            AddObject(HullObj1);
+            Object *HullObj2 = new Object(2,QVector3D(30,0,10), QVector3D(-10,0,0), hull, true);
+            AddObject(HullObj2);
             impl::PlaneCollider* pco = new impl::PlaneCollider(QVector3D(0,1,0), -50.0);
             planeobject = new Object(-1, QVector3D(0,0,0), QVector3D(0, 0, 0), pco);
             AddSolver(new ImpluseSolveer());
@@ -91,9 +96,9 @@ namespace physE {
             {
                 ResolveCollisions(sub_dt);
 
-                for (Object* obj : m_objects) {
+                for (Object* obj : qAsConst(m_objects)) {
                     if(!obj->IsDynamic) continue;
-                    obj->Force += obj->Mass * m_gravity; // apply a force
+                    //obj->Force += obj->Mass * m_gravity; // apply a force
 
                     obj->Velocity += obj->Force / obj->Mass * sub_dt;
 
@@ -102,6 +107,7 @@ namespace physE {
                     obj->Transform->Position += obj->Velocity * sub_dt;
 
                     obj->Force = QVector3D(0, 0, 0); // reset net force at the end
+                    obj->torque = QVector3D(0, 0, 0);
                 }
 
             }

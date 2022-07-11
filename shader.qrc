@@ -4,5 +4,7 @@
         <file>shader/framebuffer.vert</file>
         <file>shader/axis.frag</file>
         <file>shader/axis.vert</file>
+        <file>shader/blinePhong.frag</file>
+        <file>shader/blinePhong.vert</file>
     </qresource>
 </RCC>

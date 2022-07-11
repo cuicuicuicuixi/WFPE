@@ -51,8 +51,8 @@ void GLwindow::initializeGL()
     QuadInit();
     AxisInit();
 
-    physicProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shader/axis.vert");
-    physicProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shader/axis.frag");
+    physicProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shader/blinePhong.vert");
+    physicProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shader/blinePhong.frag");
     physicProgram.link();
     physical.init();
 
@@ -88,6 +88,7 @@ void GLwindow::paintGL()
     physicProgram.setUniformValue("model", model);
     physicProgram.setUniformValue("view", view);
     physicProgram.setUniformValue("projection", projection);
+    physicProgram.setUniformValue("camPos", camera.GetPosition());
     physical.Draw(context()->versionFunctions<QOpenGLFunctions_3_3_Core>(), &physicProgram);
 
     // 渲染结束

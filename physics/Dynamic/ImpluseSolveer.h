@@ -80,8 +80,8 @@ public:
 
 
 
-            const float percent = 0.2; // usually 20% to 80%
-            const float slop = 0.01; // usually 0.01 to 0.1
+            const float percent = 0.2f; // usually 20% to 80%
+            const float slop = 0.01f; // usually 0.01 to 0.1
 
             QVector3D correction = std::max( collision.Points.Depth - slop, 0.0f ) / (inv_massA + inv_massB) * percent * collision.Points.Normal;
             //qDebug()<<collision.Points.Depth<<", "<<collision.Points.Normal;
@@ -89,14 +89,12 @@ public:
             {
                 aBody->Velocity = aVel - friction * aMass;
                 aBody->Transform->Position -= inv_massA * correction;
-                if(!bBody)aBody->Transform->Position -= inv_massA * correction;
             }
 
             if(bBody)
             {
                 bBody->Velocity = bVel + friction * bMass;
                 bBody->Transform->Position += inv_massB * correction;
-                if(!aBody)bBody->Transform->Position += inv_massB * correction;
             }
         }
     }
