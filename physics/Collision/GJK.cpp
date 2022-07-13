@@ -342,10 +342,10 @@ namespace impl {
          *  即解关于 x,y,z 的方程 Cp = x Ca + y Cb + z Cc
          *
          */
-        qDebug()<<"#########################";
-        qDebug()<<normals[minFace];
-        qDebug()<<polytope[faces[3*minFace]].C<<","<<polytope[faces[3*minFace + 1]].C<<","<<polytope[faces[3*minFace + 2]].C;
-        qDebug()<<"#########################";
+        //qDebug()<<"#########################";
+        //qDebug()<<normals[minFace];
+        //qDebug()<<polytope[faces[3*minFace]].C<<","<<polytope[faces[3*minFace + 1]].C<<","<<polytope[faces[3*minFace + 2]].C;
+        //qDebug()<<"#########################";
 
         QVector3D Cp = minNormal * minDistance;
         SupportPoint Ca = polytope[faces[3*minFace]];
@@ -366,18 +366,23 @@ namespace impl {
         float alpha = X(0, 0);
         float belta = X(1, 0);
         float gamma = X(2, 0);
-        qDebug()<< alpha << ", " << belta <<", " << gamma;
-        qDebug()<<Cp;
+        //qDebug()<< alpha << ", " << belta <<", " << gamma;
+        //qDebug()<<Cp;
 
 
         QVector3D Ap = alpha * Ca.A + belta * Cb.A + gamma * Cc.A;
         QVector3D Bp = alpha * Ca.B + belta * Cb.B + gamma * Cc.B;
-        qDebug()<< Ap << ", " << Bp;
+        //qDebug()<< Ap << ", " << Bp;
 
         points.Normal = minNormal;
         points.Depth = minDistance + 0.001f;
         points.HasCollision = true;
-        points.ContactPoint = Ap;
+        if(abs(alpha + belta + gamma) > 1.5)
+        {
+            qDebug()<<"fail";;
+        }
+        else
+            points.ContactPoint = Ap;
 
         return points;
     }

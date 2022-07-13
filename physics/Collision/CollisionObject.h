@@ -36,9 +36,10 @@ namespace physE {
             Velocity = QVector3D(0, 0, 0);
             Force = QVector3D(0, 0, 0);
             Mass = 1;
+            I = 10;
             Transform = new struct Transform();
             Transform->Position = pos;
-            Transform->Rotation = QMatrix3x3();
+            Transform->Rotation = QMatrix4x4();
             Transform->Scale = QVector3D(1, 1, 1);
         }
 
@@ -46,9 +47,10 @@ namespace physE {
         {
             Force = QVector3D(0, 0, 0);
             Mass = 1;
+            I = 100;
             Transform = new struct Transform();
             Transform->Position = pos;
-            Transform->Rotation = QMatrix3x3();
+            Transform->Rotation = QMatrix4x4();
             Transform->Scale = QVector3D(1, 1, 1);
         }
 
@@ -60,9 +62,10 @@ namespace physE {
         {
             Force = QVector3D(0, 0, 0);
             Mass = 1;
+            I = 100;
             Transform = new struct Transform();
             Transform->Position = pos;
-            Transform->Rotation = QMatrix3x3();
+            Transform->Rotation = QMatrix4x4();
             Transform->Scale = QVector3D(1, 1, 1);
         }
 
@@ -74,10 +77,11 @@ namespace physE {
         {
             Force = QVector3D(0, 0, 0);
             Mass = 1;
+            I = 100;
             Transform = _tran;
             Transform = new struct Transform();
             Transform->Position = pos;
-            Transform->Rotation = QMatrix3x3();
+            Transform->Rotation = QMatrix4x4();
             Transform->Scale = QVector3D(1, 1, 1);
         }
 
@@ -88,7 +92,7 @@ namespace physE {
         {
             Transform = new struct Transform();
             Transform->Position = QVector3D(0, 0, 0);
-            Transform->Rotation = QMatrix3x3();
+            Transform->Rotation = QMatrix4x4();
             Transform->Scale = QVector3D(1, 1, 1);
         }
 

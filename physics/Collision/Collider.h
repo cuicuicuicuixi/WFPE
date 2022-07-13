@@ -38,7 +38,7 @@ namespace physE {
     struct Transform { // Describes an objects location
         QVector3D Position;
         QVector3D Scale;
-        QMatrix3x3 Rotation;
+        QMatrix4x4 Rotation;
     };
 
     struct VerNorm

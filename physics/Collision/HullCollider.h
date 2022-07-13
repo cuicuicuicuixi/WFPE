@@ -70,7 +70,7 @@ namespace impl {
 
             for(auto& point : m_data)
             {
-                float distance = QVector3D::dotProduct(point.Vertex, direction);
+                float distance = QVector3D::dotProduct(transform->Rotation*point.Vertex, direction);
                 if(distance > maxDistance)
                 {
                     maxDistance = distance;
@@ -78,13 +78,15 @@ namespace impl {
                 }
             }
 
-            return furthestPoint + transform->Position;
+            return transform->Rotation*furthestPoint + transform->Position;
         }
 
         void Draw(QOpenGLFunctions_3_3_Core* glFunc, QOpenGLShaderProgram* shaderProgram, Transform* transform)  override
         {
+            //QMatrix4x4 model = transform->Rotation;
             QMatrix4x4 model;
             model.translate(transform->Position);
+            model *= transform->Rotation;
             shaderProgram->setUniformValue("model", model);
             if(VAO.objectId() == 0)
             {

@@ -101,7 +101,9 @@ namespace impl {
 
         //qDebug() << distance;
         // Might nudge 'plane' twoards bDeep (furthest point of plane in B)
-        return CollisionPoints(plane, bDeep, normal, distance, true);
+        CollisionPoints point = CollisionPoints(plane, bDeep, normal, distance, true);
+        point.ContactPoint = bDeep + normal * distance;
+        return point;
 
     }
 
