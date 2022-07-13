@@ -15,6 +15,8 @@ public:
         for (Collision& collision : collisions) {
 
             //qDebug()<<collision.Points.Depth;
+            QVector3D ca = collision.Points.ContactPoint - collision.ObjA->Transform->Position;
+            QVector3D cb = collision.Points.ContactPoint - collision.ObjB->Transform->Position;
 
             Object* aBody = collision.ObjA->IsDynamic ? collision.ObjA : nullptr;
             Object* bBody = collision.ObjB->IsDynamic ? collision.ObjB : nullptr;

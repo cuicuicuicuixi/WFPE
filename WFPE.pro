@@ -44,6 +44,7 @@ HEADERS += \
 
 INCLUDEPATH += \
               .\include \
+              .\include/eigen \
 
 FORMS += \
     mainwindow.ui

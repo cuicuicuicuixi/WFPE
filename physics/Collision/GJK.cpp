@@ -8,14 +8,14 @@ namespace impl {
             Collider* colliderA, Transform* transformA,
             Collider* colliderB, Transform* transformB)
     {
-        QVector3D support = Support(
+        SupportPoint support = Support(
                     colliderA, transformA,
                     colliderB, transformB, QVector3D(1,0.1,0).normalized());
 
         Simplex vertices;
         vertices.push_front(support);
 
-        QVector3D direction = -support;
+        QVector3D direction = -support.C;
 
         size_t iterations = 0;
         while(iterations++ < 32u)
@@ -25,7 +25,7 @@ namespace impl {
                 colliderB, transformB, direction);
 
             // 下一个 support points 是否 “穿过” 原点
-            if (QVector3D::dotProduct(support, direction) <= 0) {
+            if (QVector3D::dotProduct(support.C, direction) <= 0) {
                 break;
             }
 
@@ -41,13 +41,16 @@ namespace impl {
         return {false, vertices};
     }
 
-    QVector3D Support(
+    SupportPoint Support(
             Collider* colliderA, Transform* transformA,
             Collider* colliderB, Transform* transformB,
             QVector3D direction)
     {
-        return colliderA->FindFurthestPoint(transformA, direction)
-                - colliderB->FindFurthestPoint(transformB, -direction);
+        SupportPoint P;
+        P.A = colliderA->FindFurthestPoint(transformA, direction);
+        P.B = colliderB->FindFurthestPoint(transformB, -direction);
+        P.C = P.A - P.B;
+        return P;
     }
 
     bool SameDirection(
@@ -61,11 +64,11 @@ namespace impl {
             Simplex& vertices,
             QVector3D& direction)
     {
-        QVector3D a = vertices[0];
-        QVector3D b = vertices[1];
+        SupportPoint a = vertices[0];
+        SupportPoint b = vertices[1];
 
-        QVector3D ab = b - a;
-        QVector3D ao =   - a;
+        QVector3D ab = b.C - a.C;
+        QVector3D ao =   - a.C;
 
         if(SameDirection(ab, ao))
         {
@@ -85,13 +88,13 @@ namespace impl {
             Simplex& vertices,
             QVector3D& direction)
     {
-        QVector3D a = vertices[0];
-        QVector3D b = vertices[1];
-        QVector3D c = vertices[2];
+        SupportPoint a = vertices[0];
+        SupportPoint b = vertices[1];
+        SupportPoint c = vertices[2];
 
-        QVector3D ab = b - a;
-        QVector3D ac = c - a;
-        QVector3D ao =   - a;
+        QVector3D ab = b.C - a.C;
+        QVector3D ac = c.C - a.C;
+        QVector3D ao =   - a.C;
 
         QVector3D abc = QVector3D::crossProduct(ab, ac);
 
@@ -130,15 +133,15 @@ namespace impl {
             Simplex& vertices,
             QVector3D& direction)
     {
-        QVector3D a = vertices[0];
-        QVector3D b = vertices[1];
-        QVector3D c = vertices[2];
-        QVector3D d = vertices[3];
+        SupportPoint a = vertices[0];
+        SupportPoint b = vertices[1];
+        SupportPoint c = vertices[2];
+        SupportPoint d = vertices[3];
 
-        QVector3D ab = b - a;
-        QVector3D ac = c - a;
-        QVector3D ad = d - a;
-        QVector3D ao =   - a;
+        QVector3D ab = b.C - a.C;
+        QVector3D ac = c.C - a.C;
+        QVector3D ad = d.C - a.C;
+        QVector3D ao =   - a.C;
 
         QVector3D abc = QVector3D::crossProduct(ab, ac);
         QVector3D acd = QVector3D::crossProduct(ac, ad);
@@ -168,7 +171,7 @@ namespace impl {
 
     // 计算每个平面的法线以及到原点距离， 以及最小距离平面的索引
     std::pair<std::vector<QVector4D>, size_t> GetFaceNormals(
-            const std::vector<QVector3D>&   polytope,
+            const std::vector<SupportPoint>&   polytope,
             const std::vector<size_t>&      faces)
     {
         std::vector<QVector4D> normals;
@@ -177,9 +180,9 @@ namespace impl {
 
         for(size_t i = 0; i < faces.size(); i+= 3u)
         {
-            QVector3D a = polytope[faces[i  ]];
-            QVector3D b = polytope[faces[i+1]];
-            QVector3D c = polytope[faces[i+2]];
+            QVector3D a = polytope[faces[i  ]].C;
+            QVector3D b = polytope[faces[i+1]].C;
+            QVector3D c = polytope[faces[i+2]].C;
 
             QVector3D normal = QVector3D::crossProduct(b - a, c - a).normalized();
             float distance = QVector3D::dotProduct(normal, a);
@@ -198,6 +201,8 @@ namespace impl {
                 minDistance = distance;
             }
         }
+        //qDebug()<<normals[minTriangle];
+        //qDebug()<<polytope[faces[3*minTriangle]]<<", "<<polytope[faces[3*minTriangle+1]]<<", "<<polytope[faces[3*minTriangle+2]];
 
         return { normals, minTriangle };
     }
@@ -229,7 +234,7 @@ namespace impl {
             Collider* colliderA, Transform* transformA,
             Collider* colliderB, Transform* transformB)
     {
-        std::vector<QVector3D> polytope(simplex.begin(), simplex.end());
+        std::vector<SupportPoint> polytope(simplex.begin(), simplex.end());
         std::vector<size_t> faces = {
             0,  1,  2,
             0,  3,  1,
@@ -252,8 +257,8 @@ namespace impl {
 
             if(iterations++ > 32) break;
 
-            QVector3D support = Support(colliderA, transformA, colliderB, transformB, minNormal);
-            float sDistance = QVector3D::dotProduct(minNormal, support);
+            SupportPoint support = Support(colliderA, transformA, colliderB, transformB, minNormal);
+            float sDistance = QVector3D::dotProduct(minNormal, support.C);
 
             if(std::abs(sDistance - minDistance) > 0.001f)
             {
@@ -264,7 +269,7 @@ namespace impl {
                 for(size_t i = 0; i < normals.size(); i++)
                 {
                     // 判断下一个支撑点 “穿过” 原点
-                    if(SameDirection(normals[i].toVector3D(), support))
+                    if(SameDirection(normals[i].toVector3D(), support.C))
                     {
                         size_t f = i * 3;
 
@@ -332,17 +337,47 @@ namespace impl {
 
         CollisionPoints points;
 
-        //find contact point
+        /* 求解 Contact Point
+         * 1、求解 origin 在 EPA 最终得到的三角形上的投影点在该三角形上的重心坐标
+         *  即解关于 x,y,z 的方程 Cp = x Ca + y Cb + z Cc
+         *
+         */
         qDebug()<<"#########################";
-        qDebug()<<minNormal;
         qDebug()<<normals[minFace];
-        qDebug()<<minDistance;
-        qDebug()<<faces[minFace]<<","<<faces[minFace + 1]<<","<<faces[minFace + 2];
-        qDebug()<<polytope[faces[minFace]]<<","<<polytope[faces[minFace + 1]]<<","<<polytope[faces[minFace + 2]];
+        qDebug()<<polytope[faces[3*minFace]].C<<","<<polytope[faces[3*minFace + 1]].C<<","<<polytope[faces[3*minFace + 2]].C;
+        qDebug()<<"#########################";
+
+        QVector3D Cp = minNormal * minDistance;
+        SupportPoint Ca = polytope[faces[3*minFace]];
+        SupportPoint Cb = polytope[faces[3*minFace + 1]];
+        SupportPoint Cc = polytope[faces[3*minFace + 2]];
+
+        Eigen::MatrixXd A = Eigen::MatrixXd::Zero(3,3);
+        Eigen::MatrixXd B = Eigen::MatrixXd::Zero(3,1);  //3D curve
+
+        A(0, 0) = Ca.C.x(); A(1, 0) = Ca.C.y(); A(2, 0) = Ca.C.z();
+        A(0, 1) = Cb.C.x(); A(1, 1) = Cb.C.y(); A(2, 1) = Cb.C.z();
+        A(0, 2) = Cc.C.x(); A(1, 2) = Cc.C.y(); A(2, 2) = Cc.C.z();
+
+        B(0, 0) = Cp.x(); B(1, 0) = Cc.C.y(); B(2, 0) = Cp.z();
+
+        Eigen::MatrixXd X = A.colPivHouseholderQr().solve(B);
+
+        float alpha = X(0, 0);
+        float belta = X(1, 0);
+        float gamma = X(2, 0);
+        qDebug()<< alpha << ", " << belta <<", " << gamma;
+        qDebug()<<Cp;
+
+
+        QVector3D Ap = alpha * Ca.A + belta * Cb.A + gamma * Cc.A;
+        QVector3D Bp = alpha * Ca.B + belta * Cb.B + gamma * Cc.B;
+        qDebug()<< Ap << ", " << Bp;
 
         points.Normal = minNormal;
         points.Depth = minDistance + 0.001f;
         points.HasCollision = true;
+        points.ContactPoint = Ap;
 
         return points;
     }

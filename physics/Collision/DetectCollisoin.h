@@ -120,12 +120,12 @@ namespace impl {
 
         if(collision)
         {
-            qDebug()<<"111111111111";
-            for(int i = 0; i < 4; i++)
-            {
-                qDebug()<<simplex[i];
-            }
-            qDebug()<<"111111111111";
+//            qDebug()<<"111111111111";
+//            for(int i = 0; i < 4; i++)
+//            {
+//                qDebug()<<simplex[i];
+//            }
+//            qDebug()<<"111111111111";
             return EPA(simplex, A, at, B, bt);
         }
         return CollisionPoints();
