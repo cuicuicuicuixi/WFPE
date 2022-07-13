@@ -10,7 +10,7 @@ namespace impl {
     {
         QVector3D support = Support(
                     colliderA, transformA,
-                    colliderB, transformB, QVector3D(1,0,0).normalized());
+                    colliderB, transformB, QVector3D(1,0.1,0).normalized());
 
         Simplex vertices;
         vertices.push_front(support);
