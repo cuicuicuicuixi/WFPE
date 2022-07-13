@@ -44,7 +44,7 @@ namespace physE {
             vertex.push_back(QVector3D( 1, 1, -1));
             vertex.push_back(QVector3D(-1, 1, -1));
             vertex.push_back(QVector3D( 1,-1, -1));
-            vertex.push_back(QVector3D(-2,-1, -1));
+            vertex.push_back(QVector3D(-1,-1, -1));
             vertex.push_back(QVector3D( 1, 1, 1));
             vertex.push_back(QVector3D(-1, 1, 1));
             vertex.push_back(QVector3D( 1,-1, 1));

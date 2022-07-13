@@ -5,6 +5,12 @@
 #include <initializer_list>
 #include <utility>
 
+#include <Eigen/Dense>
+#include <Eigen/Cholesky>
+#include <Eigen/LU>
+#include <Eigen/QR>
+#include <Eigen/SVD>
+
 namespace physE
 {
 namespace impl
@@ -12,9 +18,40 @@ namespace impl
 struct Simplex;
 
 
+
+    class SupportPoint {
+    public:
+        QVector3D C;
+        QVector3D A;
+        QVector3D B;
+
+        SupportPoint():C(),A(),B(){}
+
+        SupportPoint(QVector3D c, QVector3D a, QVector3D b)
+            : C(c), A(a), B(b)
+        {
+
+        }
+
+        SupportPoint(const SupportPoint& b)
+        {
+            C = b.C;
+            A = b.A;
+            B = b.B;
+        }
+
+        SupportPoint& operator =(const SupportPoint& b)
+        {
+            C = b.C;
+            A = b.A;
+            B = b.B;
+            return *this;
+        }
+    };
+
     struct Simplex
     {
-        std::array<QVector3D, 4> Vertices;
+        std::array<SupportPoint, 4> Vertices;
         size_t m_size;
 
         Simplex()
@@ -25,7 +62,7 @@ struct Simplex;
         }
 
         Simplex& operator=(
-                std::initializer_list<QVector3D> list)
+                std::initializer_list<SupportPoint> list)
         {
             for (auto v = list.begin(); v != list.end(); v++) {
                 Vertices[std::distance(list.begin(), v)] = *v;
@@ -36,22 +73,20 @@ struct Simplex;
         }
 
         void push_front(
-                QVector3D vertex)
+                SupportPoint vertex)
         {
             Vertices = {vertex, Vertices[0], Vertices[1], Vertices[2]};
             m_size = std::min<size_t>(m_size + 1, 4u);
         }
 
-        QVector3D& operator[](unsigned i) { return Vertices[i]; }
+        SupportPoint& operator[](unsigned i) { return Vertices[i]; }
         size_t size() const {return m_size;}
 
         auto begin() const { return Vertices.begin(); }
         auto end()   const { return Vertices.end() - (4u - m_size); }
     };
 
-
-
-    QVector3D Support(
+    SupportPoint Support(
             Collider* colliderA, Transform* transformA,
             Collider* colliderB, Transform* transformB,
             QVector3D direction);
