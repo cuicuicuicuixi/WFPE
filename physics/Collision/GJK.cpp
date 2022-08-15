@@ -353,7 +353,7 @@ namespace impl {
         SupportPoint Cc = polytope[faces[3*minFace + 2]];
 
         Eigen::MatrixXd A = Eigen::MatrixXd::Zero(3,3);
-        Eigen::MatrixXd B = Eigen::MatrixXd::Zero(3,1);  //3D curve
+        Eigen::MatrixXd B = Eigen::MatrixXd::Zero(3,1);
 
         A(0, 0) = Ca.C.x(); A(1, 0) = Ca.C.y(); A(2, 0) = Ca.C.z();
         A(0, 1) = Cb.C.x(); A(1, 1) = Cb.C.y(); A(2, 1) = Cb.C.z();

@@ -19,6 +19,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     physics/Collision/GJK.cpp \
+    physics/Constraints/linkconstraints.cpp \
     physics/algo/kdtree.cpp \
     physics/physicalworld.cpp \
     render/GLwindow.cpp
@@ -34,6 +35,7 @@ HEADERS += \
     physics/Collision/HullCollider.h \
     physics/Collision/PlaneCollider.h \
     physics/Collision/SphereCollider.h \
+    physics/Constraints/linkconstraints.h \
     physics/Dynamic/ImpluseSolveer.h \
     physics/Dynamic/Solver.h \
     physics/Dynamic/smoothPositionSolver.h \
