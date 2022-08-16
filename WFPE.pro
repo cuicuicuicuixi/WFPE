@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    physics/Cloth/cloth.cpp \
     physics/Collision/GJK.cpp \
     physics/Constraints/linkconstraints.cpp \
     physics/algo/kdtree.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
+    physics/Cloth/cloth.h \
     physics/Collision/Collider.h \
     physics/Collision/Collision.h \
     physics/Collision/CollisionObject.h \

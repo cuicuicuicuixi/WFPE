@@ -14,6 +14,9 @@
 #include "algo/kdtree.cpp"
 
 
+#include "Cloth/cloth.h"
+
+
 namespace physE {
 
     class physicalworld
@@ -37,6 +40,8 @@ namespace physE {
         physicalworld() : tree() {}
 
         Object * planeobject;
+
+        Cloth cloth;
 
         void init()
         {
@@ -113,6 +118,7 @@ namespace physE {
 
                     obj->Force = QVector3D(0, 0, 0); // reset net force at the end
                 }
+                cloth.update(sub_dt);
 
             }
         }
@@ -128,6 +134,7 @@ namespace physE {
                 obj->Draw(glFunc, shaderProgram);
             }
             planeobject->Draw(glFunc, shaderProgram);
+            cloth.Draw(glFunc, shaderProgram);
             shaderProgram->release();
         }
 
