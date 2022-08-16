@@ -66,10 +66,10 @@ namespace physE {
             impl::HullCollider * hull = new impl::HullCollider();
             hull->setData(vertex, face);
             srand((unsigned)time(NULL));
-            for(int i = 0; i < 5; i++)
+            for(int i = 0; i < 50; i++)
             {
-                double x = rand()%30-15;
-                double y = rand()%30-15;
+                double x = rand()%100-50;
+                double y = rand()%100-50;
                 double z = 0;//rand()%10-5;
                 double vx = rand()%4-2;
                 double vy = rand()%4-2;

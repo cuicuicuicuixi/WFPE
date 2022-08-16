@@ -17,9 +17,11 @@ public:
             //qDebug()<<collision.Points.Depth;
             QVector3D ra = QVector3D();
             QVector3D rb = QVector3D();
-            if(collision.Points.ContactPoint != QVector3D())
+            if(collision.Points.ContactPoint.length() != 0)
+            {
                 ra = /*QVector3D();//*/collision.Points.ContactPoint - collision.ObjA->Transform->Position;
                 rb = /*QVector3D();//*/collision.Points.ContactPoint - collision.ObjB->Transform->Position;
+            }
 
             Object* aBody = collision.ObjA->IsDynamic ? collision.ObjA : nullptr;
             Object* bBody = collision.ObjB->IsDynamic ? collision.ObjB : nullptr;
@@ -51,8 +53,8 @@ public:
             float invMassSum =inv_massA + inv_massB + sqrt( raCrossN.length() ) * inv_iA + sqrt( rbCrossN.length() ) * inv_iB;
 
 
-            float e = (aBody ? .8 : 1.0f)
-                    * (bBody ? .8 : 1.0f);
+            float e = (aBody ? .5 : 1.0f)
+                    * (bBody ? .5 : 1.0f);
             float j = -(1.0f + e) * nSpd / invMassSum;
 
             QVector3D impluse = j * collision.Points.Normal;

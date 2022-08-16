@@ -379,7 +379,7 @@ namespace impl {
         points.HasCollision = true;
         if(abs(alpha + belta + gamma) > 1.5)
         {
-            qDebug()<<"fail";;
+            qDebug()<< alpha << ", " << belta <<", " << gamma;
         }
         else
             points.ContactPoint = Ap;
